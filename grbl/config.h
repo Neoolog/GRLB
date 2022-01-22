@@ -32,10 +32,10 @@
 
 
 // Define board type for pin map and default settings.
-#define CPU_MAP_SMOOTHIEBOARD   // Smoothieboard (NXP LPC1769 MCU)
+//#define CPU_MAP_SMOOTHIEBOARD   // Smoothieboard (NXP LPC1769 MCU)
 //#define CPU_MAP_C3D_REMIX       // Cohesion3D Remix (NXP LPC1769 MCU)
 //#define CPU_MAP_C3D_MINI        // Cohesion3D Mini (NXP LPC1769 MCU)
-//#define CPU_MAP_MKS_SBASE       // MKS SBASE Board (NXP LPC1768 MCU)
+#define CPU_MAP_MKS_SBASE       // MKS SBASE Board (NXP LPC1768 MCU)
 //#define CPU_MAP_AZTEEG_X5       // Azteeg X5 Board (NXP LPC1769 MCU)
 
 // Force other Spindle PWM Pin (default is P2.5)
@@ -44,9 +44,10 @@
 
 // Define machine type for machine specific defaults
 //#define DEFAULTS_GENERIC
-#define DEFAULTS_K40
+//#define DEFAULTS_K40
 //#define DEFAULTS_FABKIT
 //#define DEFAULTS_JONAS
+//#define DEFAULTS_OXCNC
 
 // Serial baud rate
 // #define BAUD_RATE 230400
@@ -114,8 +115,8 @@
 // will not be affected by pin sharing.
 // NOTE: Defaults are set for a traditional 3-axis CNC machine. Z-axis first to clear, followed by X & Y.
 // NOTE: Homing cycle pattern is defined in Machine defaults!!!
-// #define HOMING_CYCLE_0 (1<<Z_AXIS)                // REQUIRED: First move Z to clear workspace.
-// #define HOMING_CYCLE_1 ((1<<X_AXIS)|(1<<Y_AXIS))  // OPTIONAL: Then move X,Y at the same time.
+//#define HOMING_CYCLE_0 (1<<Z_AXIS)                // REQUIRED: First move Z to clear workspace.
+//#define HOMING_CYCLE_1 ((1<<X_AXIS)|(1<<Y_AXIS))  // OPTIONAL: Then move X,Y at the same time.
 // #define HOMING_CYCLE_2                         // OPTIONAL: Uncomment and add axes mask to enable
 
 // NOTE: The following are two examples to setup homing for 2-axis machines.
@@ -133,15 +134,15 @@
 // cycle is still invoked by the $H command. This is disabled by default. It's here only to address
 // users that need to switch between a two-axis and three-axis machine. This is actually very rare.
 // If you have a two-axis machine, DON'T USE THIS. Instead, just alter the homing cycle for two-axes.
-// #define HOMING_SINGLE_AXIS_COMMANDS // Default disabled. Uncomment to enable.
+#define HOMING_SINGLE_AXIS_COMMANDS // Default disabled. Uncomment to enable.
 
 // After homing, Grbl will set by default the entire machine space into negative space, as is typical
 // for professional CNC machines, regardless of where the limit switches are located. Uncomment this
 // define to force Grbl to always set the machine origin at the homed location despite switch orientation.
-// #define HOMING_FORCE_SET_ORIGIN // Uncomment to enable.
+ #define HOMING_FORCE_SET_ORIGIN // Uncomment to enable.
 
 // Uncomment this define to force Grbl to always set the machine origin at bottom left.
-#define HOMING_FORCE_POSITIVE_SPACE // Uncomment to enable.
+//#define HOMING_FORCE_POSITIVE_SPACE // Uncomment to enable.
 
 // Number of blocks Grbl executes upon startup. These blocks are stored in EEPROM, where the size
 // and addresses are defined in settings.h. With the current settings, up to 2 startup blocks may
@@ -187,7 +188,7 @@
 // immediately forces a feed hold and then safely de-energizes the machine. Resuming is blocked until
 // the safety door is re-engaged. When it is, Grbl will re-energize the machine and then resume on the
 // previous tool path, as if nothing happened.
-#define ENABLE_SAFETY_DOOR_INPUT_PIN // Default disabled. Uncomment to enable.
+//#define ENABLE_SAFETY_DOOR_INPUT_PIN // Default disabled. Uncomment to enable.
 
 // After the safety door switch has been toggled and restored, this setting sets the power-up delay
 // between restoring the spindle and coolant and resuming the cycle.
@@ -586,7 +587,7 @@
 
 // LPC176x flash blocks have a rating of 10,000 write cycles. To prevent excess wear, we don't
 // write G10, G28.1, and G30.1. Uncomment to enable these writes.
-#define STORE_COORD_DATA // Default disabled. Uncomment to enable.
+//#define STORE_COORD_DATA // Default disabled. Uncomment to enable.
 
 // In Grbl v0.9 and prior, there is an old outstanding bug where the `WPos:` work position reported
 // may not correlate to what is executing, because `WPos:` is based on the g-code parser state, which
@@ -639,7 +640,7 @@
 // override immediately after coming to a stop. However, this also means that the laser still may
 // be reenabled by disabling the spindle stop override, if needed. This is purely a safety feature
 // to ensure the laser doesn't inadvertently remain powered while at a stop and cause a fire.
-#define DISABLE_LASER_DURING_HOLD // Default enabled. Comment to disable.
+//#define DISABLE_LASER_DURING_HOLD // Default enabled. Comment to disable.
 
 /* ---------------------------------------------------------------------------------------
    OEM Single File Configuration Option
@@ -652,3 +653,56 @@
 
 
 #endif
+
+
+#define DEFAULT_STEP_PULSE_MICROSECONDS 10 // $0  usec (stepper pulse time)
+#define DEFAULT_STEPPER_IDLE_LOCK_TIME 255  // $1  msec (0-254, 255 keeps steppers enabled)
+#define DEFAULT_STEPPING_INVERT_MASK 0     // $2  ZYX (e.g., 0x5 inverts Z and X stepper pulses)
+#define DEFAULT_DIRECTION_INVERT_MASK 1    // $3  ZYX (e.g., 0x2 inverts Y stepper direction)
+#define DEFAULT_INVERT_ST_ENABLE 0         // $4  bool (inverts stepper enable pin)
+#define DEFAULT_INVERT_LIMIT_PINS 0        // $5  bool (inverts limit switches to trigger on high)
+#define DEFAULT_INVERT_PROBE_PIN 0         // $6  bool (inverts probe to trigger on high)
+#define DEFAULT_STATUS_REPORT_MASK 3       // $10 bits (Reports: [0=WPos or 1=MPos] and [2=Buffer])
+#define DEFAULT_JUNCTION_DEVIATION 0.01    // $11 mm (determines machine speed through corners)
+#define DEFAULT_ARC_TOLERANCE 0.002        // $12 mm (error tolerance on arcs/cicles)
+#define DEFAULT_REPORT_INCHES 0            // $13 bool (sets position reporting to inches)
+#define DEFAULT_SOFT_LIMIT_ENABLE 0        // $20 bool (prevents moves outside *_MAX_TRAVEL; requires $23=1)
+#define DEFAULT_HARD_LIMIT_ENABLE 0        // $21 bool ([ignored] stops moving when limit switches triggered)
+#define DEFAULT_HOMING_ENABLE 1            // $22 bool (enables homing on startup)
+#define DEFAULT_HOMING_DIR_MASK 0x3          // $23 ZYX (e.g., 0x3 reverses XY homing to negative direction)
+#define DEFAULT_HOMING_FEED_RATE 200.0      // $24 mm/min (homing precision location speed)
+#define DEFAULT_HOMING_SEEK_RATE 2000.0     // $25 mm/min (homing search speed)
+#define DEFAULT_HOMING_DEBOUNCE_DELAY 250  // $26 msec (homing switch debounce: 0-65k)
+#define DEFAULT_HOMING_PULLOFF 2.0         // $27 mm (retracts this far from homing switch)
+#define DEFAULT_SPINDLE_RPM_MAX 1000.0     // $30 RPM (spindle speed for max 5V PWM output)
+#define DEFAULT_SPINDLE_RPM_MIN 0.0        // $31 RPM (spindle speed for min 20mV PWM output)
+#define DEFAULT_LASER_MODE 0               // $32 bool (adjusts spindle power with speed for lasers)
+#define DEFAULT_SPINDLE_PWM_FREQ 5000      // $33 Hz (PWM frequency for spindle)
+#define DEFAULT_SPINDLE_PWM_OFF_VALUE 0    // $34 % (% of PWM when spindle is off)
+#define DEFAULT_SPINDLE_PWM_MIN_VALUE 1    // $35 % (% of PWM when spindle is at lowest setting)
+#define DEFAULT_SPINDLE_PWM_MAX_VALUE 100  // $36 % (% of PWM when spindle is at highest setting)
+#define DEFAULT_X_STEPS_PER_MM 53.375       // $100 steps (X steps per mm)
+#define DEFAULT_Y_STEPS_PER_MM 53.320       // $101 steps (Y steps per mm)
+#define DEFAULT_Z_STEPS_PER_MM 1600.0       // $102 steps (Z steps per mm)
+#define DEFAULT_A_STEPS_PER_MM 160.0       // $103 steps (A steps per mm)
+#define DEFAULT_X_MAX_RATE 10000.0           // $110 mm/min (X max speed)
+#define DEFAULT_Y_MAX_RATE 8000.0           // $111 mm/min (Y max speed)
+#define DEFAULT_Z_MAX_RATE 500.0           // $112 mm/min (Z max speed)
+#define DEFAULT_A_MAX_RATE 500.0           // $113 mm/min (A max speed)
+#define DEFAULT_X_ACCELERATION (100.0*60*60)// $120 mm/min^2 (X max acceleration)
+#define DEFAULT_Y_ACCELERATION (100.0*60*60)// $121 mm/min^2 (Y max acceleration)
+#define DEFAULT_Z_ACCELERATION (20.0*60*60)// $122 mm/min^2 (Z max acceleration)
+#define DEFAULT_A_ACCELERATION (10.0*60*60)// $123 mm/min^2 (A max acceleration)
+#define DEFAULT_X_MAX_TRAVEL 780.0         // $130 mm (X max travel; must be positive)
+#define DEFAULT_Y_MAX_TRAVEL 1280.0         // $131 mm (Y max travel; must be positive)
+#define DEFAULT_Z_MAX_TRAVEL 80.0         // $132 mm (Z max travel; must be positive)
+#define DEFAULT_A_MAX_TRAVEL 1.0           // $133 mm (A max travel; must be positive)
+#define DEFAULT_X_CURRENT 0.6              // $140 amps (X stepper current [disabled])
+#define DEFAULT_Y_CURRENT 0.6              // $141 amps (Y stepper current [disabled])
+#define DEFAULT_Z_CURRENT 0.0              // $142 amps (Z stepper current [disabled])
+#define DEFAULT_A_CURRENT 0.0              // $143 amps (A stepper current [disabled])
+
+
+
+#define HOMING_CYCLE_0 (1<<Z_AXIS)                // REQUIRED: First move Z to clear workspace.
+#define HOMING_CYCLE_1 ((1<<X_AXIS)|(1<<Y_AXIS))  // OPTIONAL: Then move X,Y at the same time.
